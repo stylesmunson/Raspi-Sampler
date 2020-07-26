@@ -14,6 +14,19 @@ switchButton = Button(26, hold_time = 3)
 red.on()
 currentLEDstatus = "red on"
 
+def redOn():
+    if red.is_lit():
+        continue
+    else:
+        red.on()
+        green.off()
+
+def greenOn():
+    if green.is_lit():
+        continue
+    else:
+        green.on()
+        red.off()
 
 # OSC CLIENT
 
@@ -29,39 +42,25 @@ switchButton.when_held = lambda: client.send_message("/save", 'save')
 # OSC SERVER
 
 serverPort = 2
-
 print ("*** starting OSC server ***")
 
 def record_mode(address, *args):
   print(f"{address}: {args}")
-  red.on()
-  green.off()
-  currentLEDstatus = "red on"
+  redOn
 
 def play_mode(address, *args):
   print(f"{address}: {args}")
-  red.off()
-  green.on()
-  currentLEDstatus = "green on"
-
-currentLEDstatus = "green on"
+  greenOn
+  
 
 def save_lights_start(address, *args):
   print(f"{address}: {args}")
   red.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
   green.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
-  if currentLEDstatus == "red on":
-    red.on()
-    green.off()
-  elif currentLEDstatus == "green on":
-    red.off()
-    green.on()
-
-#def save_lights_stop(address, *args):
-#  print(f"{address}: {args}")
-#  red.off()
-#  green.off()
-#  green.blink(on_time = 0.1, off_time = 0.1, n=5)
+  if red.is_lit():
+      redOn
+  else:
+      greenOn
 
 def default_handler(address, *args):
   print(f"DEFAULT {address}: {args}")
