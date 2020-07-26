@@ -15,16 +15,12 @@ red.on()
 currentLEDstatus = "red on"
 
 def redOn():
-    if red.is_lit():
-        continue
-    else:
+    if not red.is_lit():
         red.on()
         green.off()
 
 def greenOn():
-    if green.is_lit():
-        continue
-    else:
+    if not green.is_lit():
         green.on()
         red.off()
 
@@ -45,25 +41,27 @@ serverPort = 2
 print ("*** starting OSC server ***")
 
 def record_mode(address, *args):
-  print(f"{address}: {args}")
-  redOn
+    print(f"{address}: {args}")
+    redOn
 
 def play_mode(address, *args):
-  print(f"{address}: {args}")
-  greenOn
-  
+    print(f"{address}: {args}")
+    greenOn
 
 def save_lights_start(address, *args):
-  print(f"{address}: {args}")
-  red.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
-  green.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
-  if red.is_lit():
-      redOn
-  else:
-      greenOn
+    currentLEDred = red.is_lit()
+    print(f"{address}: {args}")
+    red.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
+    green.blink(on_time = 0.1, off_time = 0.2, n = 5, background = False)
+    if currentLEDstatus:
+        red.on()
+        green.off()
+    else:
+        green.on()
+        red.off()
 
 def default_handler(address, *args):
-  print(f"DEFAULT {address}: {args}")
+    print(f"DEFAULT {address}: {args}")
 
 
 dispatcher = Dispatcher()
